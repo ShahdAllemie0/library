@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from .models import  Book,Library
 from .forms import BookForm, SignupForm, SigninForm
 from django.contrib.auth import login, authenticate, logout
+from django.db.models import Q
+from django.contrib.auth.models import User
+
 # Create your views here.
 
      # """""""""""librarian actions"""""""""""
@@ -29,11 +32,29 @@ def create_membership(request):
   # 1- Book's list
 def Book_list(request):
     if  request.user.is_staff:
+        books = Book.objects.all()
+        query = request.GET.get('q')
+        if query:
+            books = books.filter(
+                 Q(bookName__icontains=query)|
+                 Q(ISBN__icontains=query)|
+                 Q(genre__icontains=query)
+                     ).distinct()
         context = {
-                 "books":Book.objects.all(),}
+                "books":books,}
     else:
+        if  request.user.is_staff:
+            books = Book.objects.filter(borrow=False)
+            query = request.GET.get('q')
+            if query:
+                books = books.filter(
+                     Q(bookName__icontains=query)|
+                     Q(ISBN__icontains=query)|
+                     Q(genre__icontains=query)
+                         ).distinct()
+
         context = {
-                 "books":Book.objects.filter(borrow=False)
+                 "books":books
                }
     return render(request, 'book_list.html', context)
 
