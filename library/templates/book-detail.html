@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Detail{% endblock title %}
+
+{% block content %}
+
+<br>
+<div class="card">
+  <h5 class="card-header">Book Info</h5>
+
+  {% if books.image %}
+        <img src="{{books.image.url}}"  class="card-img-top"  alt="" style=" height: 1000px; ">
+      {% endif %}
+
+  <div class="card-body">
+    <h5 class="card-title">Name: {{books.bookName}}</h5>
+    <p class="card-text">Author: {{books.author}}</p>
+    <p class="card-text">Year of release: {{books.year}}</p>
+    <p class="card-text">Genre: {{books.genre}}</p>
+    <p class="card-text">ISBN: {{books.ISBN}}</p>
+  </div>
+  {% if request.user.is_staff %}
+  <div class="card-body">
+    <p class="card-text">Is borrowed: {{books.borrow}}</p><br />
+    <div class="row text-center">
+
+
+      <div class="col-md-4">
+        <a href="{% url 'update-book' books.id  %}" class="btn btn-outline-primary btn-block">Update</a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'delete-book' books.id %}" class="btn btn-outline-danger btn-block">Delete</a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'unborrow-book' books.id %}" class="btn btn-outline-danger btn-block">Unborrow</a>
+      </div>
+
+
+      <!-- {% elif request.user == books.author %}
+        <div class="col-md-6">
+            <a href="{% url 'update-book' books.id%}" class="btn btn-outline-primary btn-block">Update</a>
+        </div> -->
+
+      {%else%}
+      <div class="col-md-12">
+        <a href="{% url 'borrow-book' books.id %}" class="btn btn-outline-primary btn-block">Borrow</a>
+        <br />
+      </div>
+
+
+
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}

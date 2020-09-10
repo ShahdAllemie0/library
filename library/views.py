@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import  Book,Library
+from .models import  Book,Membership,Library
 from .forms import BookForm, SignupForm, SigninForm
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.core.mail import send_mail
+from django.http import HttpResponse
+
 
 # Create your views here.
 
@@ -20,6 +24,13 @@ def create_membership(request):
             user = form.save(commit=False)
             user.set_password(user.password)
             user.save()
+            send_mail(
+                 'Shahd Library',
+                 'You just addedd as membership in our library',
+                   'from@shahdlibrary.com',
+                   [user.email],
+                   fail_silently=False,
+)
             return redirect("Book-list")
     context = {
         "form":form,
@@ -42,21 +53,51 @@ def Book_list(request):
                      ).distinct()
         context = {
                 "books":books,}
+    # elif request.user.is_authenticated:
+    #     books = Book.objects.filter(id=request.user)
+    #     if  request.user.is_staff:
+    #         books = Book.objects.all()
+    #         query = request.GET.get('q')
+    #
+    #     context = {"books":books,}
     else:
-        if  request.user.is_staff:
-            books = Book.objects.filter(borrow=False)
-            query = request.GET.get('q')
-            if query:
-                books = books.filter(
+        books = Book.objects.filter(borrow=False)
+        query = request.GET.get('q')
+        if query:
+            books = books.filter(
                      Q(bookName__icontains=query)|
                      Q(ISBN__icontains=query)|
                      Q(genre__icontains=query)
                          ).distinct()
-
         context = {
-                 "books":books
-               }
+                    "books":books,}
+
+
     return render(request, 'book_list.html', context)
+    # context = {
+    #          "books":books
+    #         }
+    #
+    # books = Book.objects.all()
+    # members= Membership.objects.get(member=request.user)
+    # borrows = Borrow.objects.filter(borrowed_by=members).filter(book=books)
+    # context ={
+    #     	"books": books,
+    #         "borrows":borrows}
+
+        # books = Book.objects.all()
+        # query = request.GET.get('q')
+        # if query:
+        #     books = books.filter(
+        #              Q(bookName__icontains=query)|
+        #              Q(ISBN__icontains=query)|
+        #              Q(genre__icontains=query)
+        #                  ).distinct()
+        #
+        # context = {
+        #          "books":books
+        #         }
+
 
  # 2- add books to the list
 def Add_Book(request):
@@ -81,7 +122,7 @@ def Update_Book(request, book_id):
         return redirect("noaccess")
     form = BookForm(instance=book_obj)
     if request.method == "POST":
-        form = BookForm(request.POST,  instance=book_obj)
+        form = BookForm(request.POST,request.FILES,  instance=book_obj)
         if form.is_valid():
             form.save()
             return redirect("Book-list")
@@ -90,6 +131,40 @@ def Update_Book(request, book_id):
         "form":form,
     }
     return render(request, 'update_book.html', context)
+
+
+ #4-  book's detail
+def Book_detail(request, book_id):
+
+    books = Book.objects.get(id=book_id)
+    library = Library.objects.filter(books=books)
+    context = {
+        "books": books,
+
+    }
+    return render(request, 'book-detail.html', context)
+
+
+    #5- borrow book
+def borrow_Book(request, book_id):
+    book_obj=Book.objects.filter(id=book_id).update(borrow=True)
+    return redirect("book-detail",book_id)
+
+
+
+    #5- Unborrow book
+def unborrow_Book(request, book_id):
+    book_obj=Book.objects.filter(id=book_id).update(borrow=False)
+    return redirect("book-detail",book_id)
+
+
+    # 6- delete book
+def delete_Book(request, book_id):
+    book_obj=Book.objects.filter(id=book_id)
+    if not (request.user.is_staff):
+        return redirect("noaccess")
+    book_obj.delete()
+    return redirect("Book-list")
 
 
 
@@ -142,3 +217,19 @@ def signout(request):
 # """""NOTE: No access page  """""
 def Noaccess(request):
     return render(request, 'noaccess.html')
+
+
+
+
+    # """"""email""""""
+def sendmail(request):
+
+    send_mail(
+        'Librart',
+        'You just added as membership',
+        'shahdallemie@gmail.com',
+        [request.email],
+        fail_silently=False,
+    )
+
+    return HttpResponse('Mail successfully sent')

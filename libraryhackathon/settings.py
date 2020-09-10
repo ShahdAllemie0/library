@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from django.core.mail import send_mail
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+from django.core.mail import EmailMessage
+message = EmailMessage(subject="Library", body="added", from_email="shahdallemie@gmail.com",  to=[request.email])
+message.send(fail_silently=False)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +46,7 @@ INSTALLED_APPS = [
     'library',
     'crispy_forms',
 ]
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,8 +62,9 @@ ROOT_URLCONF = 'libraryhackathon.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [os.path.join(BASE_DIR, 'sendmail/templates')],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -115,8 +123,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+DEFAULT_FROM_EMAIL = 'Shahd <shahdallemie@gmail.com>'
+EMAIL_HOST = 'smtp.live.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'shahdallemie'
+EMAIL_HOST_PASSWORD = 'ssallemie'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

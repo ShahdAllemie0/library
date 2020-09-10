@@ -16,8 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from library import views
+from django.conf import settings
+from django.conf.urls.static import static
+# from .views import  sendmail
+
+
 
 urlpatterns = [
+    path('sendmail', views.sendmail, name='sendmail'),
     path('admin/', admin.site.urls),
     path('',views.Book_list ,name='Book-list'),
     path('create/membership/',views.create_membership ,name='create-membership'),
@@ -27,9 +33,16 @@ urlpatterns = [
     path('noaccess/',views.Noaccess ,name='noaccess'),
     path('addbook/',views.Add_Book ,name='add-books'),
     path('updatebook/<int:book_id>/',views.Update_Book ,name='update-book'),
+    path('bookdetail/<int:book_id>/',views.Book_detail ,name='book-detail'),
+    path('deletebook/<int:book_id>/',views.delete_Book ,name='delete-book'),
+    path('borrowbook/<int:book_id>/',views.borrow_Book ,name='borrow-book'),
+    path('unborrowbook/<int:book_id>/',views.unborrow_Book ,name='unborrow-book'),
 
 
 
 
 
 ]
+
+urlpatterns+=static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

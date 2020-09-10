@@ -5,23 +5,30 @@
 {% block content %}
 <br>
 <div class="row">
-    {% for book in books %}
-    <div class="col-md-4">
+  {% for book in books %}
+  <div class="col-md-4">
+    {% if book.image %}
+          <img src="{{book.image.url}}"  class="card-img-top m-3"  alt="" style=" height: 550px; object-fit: cover;" >
+        {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">Name: {{book.bookName}}</h5>
+      <p class="card-text">Author: {{book.author}}</p>
+      <p class="card-text">Genre: {{book.genre}}</p>
+      <p class="card-text">ISBN: {{book.ISBN}}</p>
 
-          <div class="card-body">
-            <h5 class="card-title">Name: {{book.bookName}}</h5>
-            <p class="card-text">Author: {{book.author}}</p>
-            <p class="card-text">Genre: {{book.genre}}</p>
-            <p class="card-text">ISBN: {{book.ISBN}}</p>
 
 
-
-          </div>
-          <ul class="list-group list-group-flush">
-
-          </ul>
-        </div>
     </div>
-    {% endfor %}
+    <ul class="list-group list-group-flush">
+
+      <li class="list-group-item text-center">
+        <a href="{% url 'book-detail' book.id %}" class="btn btn-outline-dark">View</a>
+      </li>
+
+
+    </ul>
+  </div>
+
+  {% endfor %}
 </div>
 {% endblock content %}

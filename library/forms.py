@@ -1,5 +1,5 @@
 from django import forms
-from .models import Book
+from .models import Book,Membership
 from django.contrib.auth.models import User
 
 
@@ -7,6 +7,11 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = '__all__'
+
+# class BorrowForm(forms.ModelForm):
+#     class Meta:
+#         model= Borrow
+#         fields = '__all__'
 
 
 
