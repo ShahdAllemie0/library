@@ -128,7 +128,7 @@ EMAIL_HOST = 'smtp.live.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shahdallemie'
-EMAIL_HOST_PASSWORD = 'ssallemie'
+EMAIL_HOST_PASSWORD = ''
 
 
 STATIC_URL = '/static/'
