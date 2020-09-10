@@ -15,8 +15,8 @@ import os
 from django.core.mail import send_mail
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 from django.core.mail import EmailMessage
-message = EmailMessage(subject="Library", body="added", from_email="shahdallemie@gmail.com",  to=[request.email])
-message.send(fail_silently=False)
+# message = EmailMessage(subject="Library", body="added", from_email="shahdallemie@gmail.com",  to=[request.email])
+# message.send(fail_silently=False)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
